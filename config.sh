@@ -66,6 +66,7 @@ SUSFS_REPO="gitlab.com:simonpunk/susfs4ksu@gki-android12-5.10"
 # Other sources
 GKI_URL="https://dl.google.com/android/gki/gki-certified-boot-android12-5.10-2025-09_r1.zip"
 LIBFAKESTAT_RELEASE_API="https://api.github.com/repos/cctv18/libfakestat/releases/latest"
+CLANG_RELEASE_API="https://api.github.com/repos/bachnxuan/aosp_clang_mirror/releases/tags/clang-r596125-15682573"
 
 case "$BUILD_TARGET" in
     device)

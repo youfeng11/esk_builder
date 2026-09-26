@@ -158,11 +158,12 @@ setup_toolchain() {
     local clang_url
     clang_url=$(
         github_release_asset_url \
-            "https://api.github.com/repos/bachnxuan/aosp_clang_mirror/releases/latest" \
+            "$CLANG_RELEASE_API" \
             "clang-r*.tar.gz"
     )
 
     mkdir -p "$CLANG"
+    rm -f "$WORKSPACE/clang-archive"*
 
     local aria_opts=(
         -q -c -x16 -s16 -k8M -m 5 --retry-wait=5
@@ -173,10 +174,19 @@ setup_toolchain() {
     if aria2c "${aria_opts[@]}"; then
         success "Clang download successful!"
     else
+        rm -f "$WORKSPACE/clang-archive"*
         error "Clang download failed."
     fi
 
-    tar -xzf "$WORKSPACE/clang-archive" -C "$CLANG"
+    if ! gzip -t "$WORKSPACE/clang-archive" > /dev/null 2>&1; then
+        rm -f "$WORKSPACE/clang-archive"*
+        error "Downloaded Clang archive is corrupt or incomplete."
+    fi
+
+    if ! tar -xzf "$WORKSPACE/clang-archive" -C "$CLANG"; then
+        rm -f "$WORKSPACE/clang-archive"*
+        error "Failed to extract Clang toolchain."
+    fi
     rm -f "$WORKSPACE/clang-archive"
 
     _use_toolchain
